@@ -8,6 +8,7 @@ import com.proyecto.ecommercemovil.data.model.carrito.CarritoResponse
 import com.proyecto.ecommercemovil.data.model.carrito.CarritoSingleResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Header
@@ -54,10 +55,15 @@ interface CarritoApiService {
     @GET("api/v1/carrito/{id}")
     suspend fun getCarrito(@Path("id") id: Int): CarritoResponse
 
-    @PUT("carrito-item/{itemId}/cantidad")
+    @PUT("api/v1/carrito-item/{itemId}/cantidad")
     suspend fun actualizarCantidadItem(
         @Path("itemId") itemId: Int,
         @Query("cantidad") cantidad: Int
     )
+
+    @DELETE("api/v1/carrito-item/{itemId}")
+    suspend fun eliminarCarritoItem(
+        @Path("itemId") itemId: Int,
+    ): Response<Unit>
 
 }
