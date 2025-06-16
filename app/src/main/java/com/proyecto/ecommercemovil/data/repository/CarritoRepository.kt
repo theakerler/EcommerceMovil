@@ -45,4 +45,9 @@ class CarritoRepository(
     suspend fun actualizarCantidadItem(itemId: Int, cantidad: Int) {
         api.actualizarCantidadItem(itemId, cantidad)
     }
+
+    suspend fun eliminarCarritoItem(itemId: Int): Boolean {
+        val response = api.eliminarCarritoItem(itemId)
+        return response.isSuccessful
+    }
 }
