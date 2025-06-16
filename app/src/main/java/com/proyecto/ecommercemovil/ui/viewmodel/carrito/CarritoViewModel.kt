@@ -124,15 +124,40 @@ class CarritoViewModel(
             }
         }
     }
-    fun actualizarCantidad(itemId: Int, nuevaCantidad: Int) {
+   fun actualizarCantidad(itemId: Int, nuevaCantidad: Int) {
+       viewModelScope.launch {
+           try {
+               println("Actualizando cantidad: itemId=$itemId, nuevaCantidad=$nuevaCantidad")
+               if (nuevaCantidad < 1) return@launch
+               carritoRepository.actualizarCantidadItem(itemId, nuevaCantidad)
+               val carritoId = _carrito.value?.id
+               println("CarritoId actual: $carritoId")
+               if (carritoId != null) {
+                   cargarCarrito(carritoId)
+               } else {
+                   _error.value = "Carrito no encontrado"
+               }
+           } catch (e: Exception) {
+               _error.value = "Error al actualizar cantidad: ${e.message}"
+               println("Error al actualizar cantidad: ${e.message}")
+           }
+       }
+   }
+
+    fun eliminarItem(itemId: Int) {
         viewModelScope.launch {
             try {
-                if (nuevaCantidad < 1) return@launch
-                carritoRepository.actualizarCantidadItem(itemId, nuevaCantidad)
-                cargarCarrito(_carrito.value?.id ?: return@launch)
+                val ok = carritoRepository.eliminarCarritoItem(itemId)
+                if (ok) {
+                    val carritoId = _carrito.value?.id
+                    if (carritoId != null) cargarCarrito(carritoId)
+                } else {
+                    _error.value = "Error al eliminar item"
+                }
             } catch (e: Exception) {
-                _error.value = "Error al actualizar cantidad"
+                _error.value = "Error al eliminar item: ${e.message}"
             }
         }
     }
+
 }
