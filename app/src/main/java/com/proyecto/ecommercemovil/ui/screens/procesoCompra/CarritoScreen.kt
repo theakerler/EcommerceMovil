@@ -19,6 +19,7 @@ import com.proyecto.ecommercemovil.ui.theme.Red500
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.remember
+import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import com.proyecto.ecommercemovil.ui.viewmodel.descuento.DescuentoViewModel
 import kotlin.div
@@ -26,6 +27,7 @@ import kotlin.times
 
 @Composable
 fun CarritoScreen(
+    navController: NavHostController,
     carritoId: Int,
     viewModel: CarritoViewModel,
     descuentoViewModel: DescuentoViewModel,
@@ -176,9 +178,8 @@ fun CarritoScreen(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-
             Button(
-                onClick = { /* Acción siguiente */ },
+                onClick = { navController.navigate("datos_personales") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp)
