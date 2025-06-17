@@ -5,6 +5,11 @@ import android.app.Application
 import androidx.activity.ComponentActivity
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -27,6 +32,7 @@ import com.proyecto.ecommercemovil.ui.viewmodel.LoginViewModelFactory
 import com.proyecto.ecommercemovil.ui.viewmodel.RegisterViewModel
 import com.proyecto.ecommercemovil.ui.viewmodel.RegisterViewModelFactory
 import com.proyecto.ecommercemovil.ui.viewmodel.carrito.CarritoViewModel
+import com.proyecto.ecommercemovil.ui.viewmodel.descuento.DescuentoViewModel
 import com.proyecto.ecommercemovil.ui.viewmodel.prenda.PrendaDescuentoViewModel
 import com.proyecto.ecommercemovil.ui.viewmodel.prenda.PrendaDescuentoViewModelFactory
 import com.proyecto.ecommercemovil.ui.viewmodel.prenda.PrendaDetalleViewModel
@@ -124,11 +130,37 @@ fun AppNavGraph(
             val carritoViewModel: CarritoViewModel = viewModel(
                 factory = AppModule.carritoViewModelFactory(application)
             )
-            MainScreen(navController) {
-                CarritoScreen(
-                    carritoId = carritoId,
-                    viewModel = carritoViewModel
-                )
+            val descuentoViewModel: DescuentoViewModel = viewModel(
+                factory = AppModule.descuentoViewModelFactory(application)
+            )
+
+            // Estado para usuarioId
+            var usuarioId by remember { mutableStateOf<Int?>(null) }
+
+            // Obtener usuarioId usando AuthRepository
+            LaunchedEffect(Unit) {
+                val token = AppModule.authRepository.getToken()
+                if (token != null) {
+                    try {
+                        usuarioId = AppModule.authRepository.getUsuarioId(token)
+                    } catch (e: Exception) {
+                        // Maneja el error si es necesario
+                    }
+                }
+            }
+
+            // Muestra un loader mientras se obtiene el usuarioId
+            if (usuarioId == null) {
+                androidx.compose.material3.CircularProgressIndicator()
+            } else {
+                MainScreen(navController) {
+                    CarritoScreen(
+                        carritoId = carritoId,
+                        viewModel = carritoViewModel,
+                        descuentoViewModel = descuentoViewModel,
+                        usuarioId = usuarioId!!
+                    )
+                }
             }
         }
 
