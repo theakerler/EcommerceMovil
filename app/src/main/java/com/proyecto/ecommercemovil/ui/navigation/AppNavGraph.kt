@@ -26,6 +26,8 @@ import com.proyecto.ecommercemovil.ui.screens.prenda.MujerScreen
 import com.proyecto.ecommercemovil.ui.screens.prenda.PrendaDetalleScreen
 import com.proyecto.ecommercemovil.ui.screens.prenda.PrendasDescuentoScreen
 import com.proyecto.ecommercemovil.ui.screens.procesoCompra.CarritoScreen
+import com.proyecto.ecommercemovil.ui.screens.procesoCompra.DatosPersonalesScreen
+import com.proyecto.ecommercemovil.ui.screens.procesoCompra.DireccionScreen
 import com.proyecto.ecommercemovil.ui.screens.sesion.LoginViewModel
 import com.proyecto.ecommercemovil.ui.screens.sesion.RegisterScreen
 import com.proyecto.ecommercemovil.ui.viewmodel.LoginViewModelFactory
@@ -155,12 +157,32 @@ fun AppNavGraph(
             } else {
                 MainScreen(navController) {
                     CarritoScreen(
+                        navController = navController,
                         carritoId = carritoId,
                         viewModel = carritoViewModel,
                         descuentoViewModel = descuentoViewModel,
                         usuarioId = usuarioId!!
                     )
                 }
+            }
+        }
+
+        composable("datos_personales") {
+            MainScreen(navController) {
+                DatosPersonalesScreen(
+                    navController = navController
+                )
+            }
+        }
+
+        composable("direccion") {
+            MainScreen(navController) {
+                DireccionScreen(
+                    onContinuar = {
+                        // Aquí puedes navegar a la siguiente pantalla, por ejemplo:
+                        // navController.navigate("resumen")
+                    }
+                )
             }
         }
 
